@@ -8,6 +8,12 @@ class ReachTest extends PHPUnit_Framework_TestCase {
 	public function setUp()
 	{
 		$this->reach = new Reach(m::mock('Illuminate\Redis\Database'),  m::mock('Reach\String'));
+		$this->testObj = new stdClass;
+		$this->testObj->searchableNamespace = "books";
+		$this->testObj->searchableAttributes = ["title"];
+		$this->testObj->id = 1;
+		$this->testObj->title = "The Story Jesse";
+
 	}
 
 	public function tearDown()
@@ -17,12 +23,6 @@ class ReachTest extends PHPUnit_Framework_TestCase {
 
 	public function testInsertString()
 	{
-		$testObj = new stdClass;
-		$testObj->searchableAttributes = ["title"];
-		$testObj->searchableNamespace = "books";
-		$testObj->id = 1;
-		$testObj->title = "The Story Jesse";
-
 		$redis = m::mock('Illuminate\Redis\Database');
 
 		$redis->shouldReceive('sadd')->times(3);
@@ -43,7 +43,59 @@ class ReachTest extends PHPUnit_Framework_TestCase {
 
 		$reach = new Reach($redis, $string);
 
-		$this->assertEquals($reach->add($testObj), true);
+		$this->assertEquals($reach->add($this->testObj), true);
+	}
+
+	public function testRemoveString()
+	{
+		$redis = m::mock('Illuminate\Redis\Database');
+
+		$redis->shouldReceive('srem')->times(3);
+		$redis->shouldReceive('sismember')
+			->times(3)
+			->andReturn(1, 1, 1);
+
+		$string = m::mock('Reach\String');
+
+		$string->shouldReceive('prepare')
+			->times(1)
+			->andReturn([
+				metaphone('the'), 
+				metaphone('story'),
+				metaphone('jesse')
+			]);
+
+		$string->shouldReceive('stripPunctuation')
+			->times(1)
+			->andReturn('books');
+
+		$reach = new Reach($redis, $string);
+
+		$this->assertEquals($reach->remove($this->testObj), true);
+	}
+
+	public function testFindString()
+	{
+		$redis = m::mock('Illuminate\Redis\Database');
+
+		$redis->shouldReceive('sinter')
+			->andReturn([1]);
+
+		$string = m::mock('Reach\String');
+
+		$string->shouldReceive('prepare')
+			->andReturn([
+				metaphone('the'),
+				metaphone('story')
+			]);
+
+		$string->shouldReceive('stripPunctuation')
+			->times(1)
+			->andReturn('books');
+
+		$reach = new Reach($redis, $string);
+		$expected = [1];
+		$this->assertEquals($reach->find('books', 'the story'), $expected);
 	}
 
 	public function testEnsureSearchableNoNamespaceFailure()
