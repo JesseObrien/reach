@@ -1,0 +1,25 @@
+{
+    "name": "jesse/reach",
+    "description": "PHP Redis search library.",
+    "require": {
+        "illuminate/redis": "4.1.*@dev",
+        "illuminate/support": "4.1.*@dev"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.9.*@dev",
+        "mockery/mockery": "0.9.*@dev"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jesse O'Brien",
+            "email": "jesse@jesse-obrien.ca"
+        }
+    ],
+    "autoload" : {
+        "psr-0": {
+            "Reach": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
