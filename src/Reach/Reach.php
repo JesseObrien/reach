@@ -28,7 +28,7 @@ class Reach {
 			];
 		}
 
-		$this->redis = $redis ?: new Redis;
+		$this->redis = $redis ?: new Redis($connections);
 		$this->string = $string ?: new String;
 	}
 
