@@ -13,6 +13,7 @@ Add `"jesseobrien/reach": "dev-master"` to the require section of your composer.
 
 #### Insert A Book
 
+```php
     # Ensure your object has the searchable variables set.
     class Book {
       protected $searchableAttributes = ['name', 'author'];
@@ -28,10 +29,11 @@ Add `"jesseobrien/reach": "dev-master"` to the require section of your composer.
     // Now that our object has an id from save(), insert it into Reach
     $searchIndex = new Reach();
     $searchIndex->add($b);
-
+```
 
 #### Find Books
 
+```php
     // Search in books for 'sherlock holmes'
     // Reach will return the ids of books it finds matching 'sherlock' and 'holmes'
     $ids = $searchIndex->find('books', 'sherlock holmes');
@@ -41,6 +43,6 @@ Add `"jesseobrien/reach": "dev-master"` to the require section of your composer.
     {
       $result[] = Book::find($id);
     }
-  
+```
   
   
