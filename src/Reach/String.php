@@ -17,28 +17,28 @@ class String {
 	protected $minimalWordLength = 3;
 
 	/**
-     * Prepare a string to have it's pieces inserted into the search index
-     *
-     * @param string $term
-     * @return array
-     */
-    public function prepare($string)
-    {
-        $string = strtolower($this->stripPunctuation($string));
-        $string = str_replace("-", " ", $string);
+	 * Prepare a string to have it's pieces inserted into the search index
+	 *
+	 * @param string $term
+	 * @return array
+	 */
+	public function prepare($string)
+	{
+		$string = strtolower($this->stripPunctuation($string));
+		$string = str_replace("-", " ", $string);
 		$terms = explode(" ", $string);
 		
 		$prepared = [];
-        foreach($terms as &$t)
-        {
+		foreach($terms as &$t)
+		{
 			if ( ! $this->isStopWord($t) and strlen($t) >= 3)
 			{
-            	$prepared[] = metaphone($t); 
+				$prepared[] = metaphone($t); 
 			}
 		}
 
-        return $prepared;
-    }
+		return $prepared;
+	}
 
 	/**
 	 * Determine if the word is a stop word, not to be included in the index
@@ -57,10 +57,10 @@ class String {
 	 * @param string $string
 	 * @return string
 	 */
-    public function stripPunctuation($string)
-    {
+	public function stripPunctuation($string)
+	{
 		return trim(preg_replace('#[^a-zA-Z0-9- ]#', '', $string));
-    }
+	}
 
 
 
