@@ -1,5 +1,5 @@
 {
-    "name": "jesse/reach",
+    "name": "jesseobrien/reach",
     "description": "PHP Redis search library.",
     "require": {
         "illuminate/redis": "4.1.*@dev",
