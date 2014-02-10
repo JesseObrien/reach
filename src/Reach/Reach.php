@@ -15,7 +15,7 @@ class Reach {
 	 * @param array $connections
 	 * @return void
 	 */
-	public function __construct(Redis $redis, String $string, array $connections = [])
+	public function __construct(Redis $redis = null, String $string = null, array $connections = [])
 	{
 		if ( ! is_array($connections) or empty($connections))
 		{
@@ -27,9 +27,9 @@ class Reach {
 				]
 			];
 		}
-		
-		$this->redis = $redis;
-		$this->string = $string;
+
+		$this->redis = $redis ?: new Redis;
+		$this->string = $string ?: new String;
 	}
 
     /**
