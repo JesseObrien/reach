@@ -154,7 +154,7 @@ class Reach {
 			{
 				// Redis SREM will return the number of elements deleted from 
 				// the set. It's either 1 or 0. 0 does not mean failure it 
-				// could mean the element is already part of the set. There is 
+				// could mean the element not part of the set. There is 
 				// no error checking here because of this behaviour.
 				$this->redis->srem("searchable:$namespace:$term", $id); 
 			}
