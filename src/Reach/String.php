@@ -7,7 +7,7 @@ class String {
 	 *
 	 * @var array
 	 */
-	protected $stopWords = ["of", "to", "and", "a", "in", "is", "it", "you", "that"];
+	protected $stopWords = ["the", "of", "to", "and", "a", "in", "is", "it", "you", "that"];
 
 	/**
 	 * Minimal word length to be included in the index
@@ -31,6 +31,7 @@ class String {
 		$prepared = [];
 		foreach($terms as &$t)
 		{
+			var_dump($t);
 			if ( ! $this->isStopWord($t) and strlen($t) >= 3)
 			{
 				$prepared[] = metaphone($t); 

@@ -25,7 +25,7 @@ class ReachTest extends PHPUnit_Framework_TestCase {
 	{
 		$redis = m::mock('Illuminate\Redis\Database');
 
-		$redis->shouldReceive('sadd')->times(3);
+		$redis->shouldReceive('sadd')->times(2);
 
 		$string = m::mock('Reach\String');
 		
@@ -50,10 +50,10 @@ class ReachTest extends PHPUnit_Framework_TestCase {
 	{
 		$redis = m::mock('Illuminate\Redis\Database');
 
-		$redis->shouldReceive('srem')->times(3);
+		$redis->shouldReceive('srem')->times(2);
 		$redis->shouldReceive('sismember')
-			->times(3)
-			->andReturn(1, 1, 1);
+			->times(2)
+			->andReturn( 1, 1);
 
 		$string = m::mock('Reach\String');
 
