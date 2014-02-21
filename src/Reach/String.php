@@ -31,7 +31,6 @@ class String {
 		$prepared = [];
 		foreach($terms as &$t)
 		{
-			var_dump($t);
 			if ( ! $this->isStopWord($t) and strlen($t) >= 3)
 			{
 				$prepared[] = metaphone($t); 

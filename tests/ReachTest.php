@@ -98,6 +98,36 @@ class ReachTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($reach->find('books', 'the story'), $expected);
 	}
 
+	public function testMultipleFind()
+	{
+		$redis = m::mock('Illuminate\Redis\Database');
+
+		$redis->shouldReceive('sinter')
+			->times(2)
+			->andReturn([1],[]);
+
+		$string = m::mock('Reach\String');
+
+		$string->shouldReceive('prepare')
+			->times(2)
+			->andReturn([
+				metaphone('the'),
+				metaphone('story')
+			],
+			[
+				metaphone('the'),
+				metaphone('story')
+			]);
+
+		$string->shouldReceive('stripPunctuation')
+			->times(2)
+			->andReturn('books', 'authors');
+
+		$reach = new Reach($redis, $string);
+		$expected = ['books' => [1], 'authors' => []];
+		$this->assertEquals($reach->findIn(['books', 'authors'], 'the story'), $expected);
+	}
+
 	public function testEnsureSearchableNoNamespaceFailure()
 	{
 		$this->setExpectedException('Reach\SearchableNamespaceException');

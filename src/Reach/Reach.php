@@ -35,7 +35,8 @@ class Reach {
 	/**
 	 * Find some ids in the search index and return them
 	 *
-	 * @param string
+	 * @param string Namespace to search in
+	 * @param string String to search for in the namespace
 	 * @return array
 	 */
 	public function find($namespace, $string)
@@ -53,6 +54,24 @@ class Reach {
 		// SINTER is an AND search
 		// SUNION is an OR search
 		return empty($searchkeys) ? [] : $this->redis->sinter($searchkeys);
+	}
+
+	/**
+	 * Search for a query in multiple namespaces
+	 *
+	 * @param array $namespaces
+	 * @param string String to search for in the namespaces
+	 * @return array
+	 */
+	public function findIn(array $namespaces, $string)
+	{
+		$results = [];
+		foreach($namespaces as $index => $namespace)
+		{
+			$results[$namespace] = $this->find($namespace, $string);
+		}
+
+		return $results;
 	}
 
 	/**
