@@ -19,7 +19,7 @@ class ReachServiceProvider extends ServiceProvider {
 
 		$this->app['reach'] = $this->app->share(function($app){
 			$connections = $app['config']->get('database.redis');
-			return new Reach(new Redis($connections));
+			return new Reach($connections);
 		});
 	}
 

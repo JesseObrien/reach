@@ -1,6 +1,6 @@
 <?php namespace Reach;
 
-use Illuminate\Redis\Database as Redis;
+use Predis\Client as Redis;
 use Reach\String;
 
 class SearchableNamespaceException extends \RuntimeException {}
@@ -15,21 +15,20 @@ class Reach {
 	 * @param array $connections
 	 * @return void
 	 */
-	public function __construct(Redis $redis = null, String $string = null, array $connections = [])
+	public function __construct(array $connections = [])
 	{
-		if ( ! is_array($connections) or empty($connections))
+		if (empty($connection))
 		{
-			$connections = [
-				'default' => [
-					'host'	   => '127.0.0.1',
-					'port'	   => 6379,
-					'database' => 0, 
-				]
+			$connection = [
+				'scheme' => 'tcp',
+				'host'	   => '127.0.0.1',
+				'port'	   => 6379,
+				'database' => 0, 
 			];
 		}
 
-		$this->redis = $redis ?: new Redis($connections);
-		$this->string = $string ?: new String;
+		$this->redis = new Redis($connection);
+		$this->string = new String;
 	}
 
 	/**
@@ -80,17 +79,17 @@ class Reach {
 	 * @param mixed $object
 	 * @return $this 
 	 */
-	public function add($object)
+	public function add(Reachable $object)
 	{
 		$this->ensureSearchable($object);
 
-		foreach($object->searchableAttributes as $field)
+		foreach($object->getReachableAttributes() as $attribute)
 		{
-			$value = $object->{$field};
-
-			if (isset($value) and ! empty($value))
+			if (empty($object->{$attribute}))
 			{
-				$this->insert($object->searchableNamespace, $value, $object->id);
+				$value = $object->{$attribute};
+
+				$this->insert($object->getReachNamespace(), $value, $object->getReachId());
 			}
 		}
 
