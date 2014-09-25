@@ -2,7 +2,7 @@
     "name": "jesseobrien/reach",
     "description": "PHP Redis search library.",
     "require": {
-        "illuminate/redis": "4.1.*@dev",
+        "predis/predis": "1.1.*@dev",
         "illuminate/support": "4.1.*@dev"
     },
     "require-dev": {
