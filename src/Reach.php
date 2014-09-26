@@ -1,6 +1,6 @@
 <?php namespace Reach;
 
-use Predis\Client as Redis;
+use Predis\Client;
 use Reach\String;
 
 class SearchableNamespaceException extends \RuntimeException {}
@@ -8,28 +8,37 @@ class SearchableAttributesException extends \RuntimeException {}
 
 class Reach {
 
+    /**
+     * @var Predis\Client
+     */
+    private $client;
 
 	/**
 	 * Create a new instance of Reach
 	 * 
-	 * @param array $connections
+	 * @param array $clients
 	 * @return void
 	 */
-	public function __construct(array $connections = [])
+	public function __construct(Client $client, Transformer $transformer)
 	{
-		if (empty($connection))
-		{
-			$connection = [
-				'scheme' => 'tcp',
-				'host'	   => '127.0.0.1',
-				'port'	   => 6379,
-				'database' => 0, 
-			];
-		}
-
-		$this->redis = new Redis($connection);
-		$this->string = new String;
+        $this->setClient($client);
+        $this->setTransformer($transformer);
 	}
+
+    public function setClient(Client $client)
+    {
+        $this->client = $client;
+    }
+    
+    public function getclient()
+    {
+        return $this->client;
+    }
+
+    public function setTransformer(Transformer $transformer)
+    {
+        $this->transformer = $transformer;
+    }
 
 	/**
 	 * Find some ids in the search index and return them
@@ -38,10 +47,10 @@ class Reach {
 	 * @param string String to search for in the namespace
 	 * @return array
 	 */
-	public function find($namespace, $string)
+	public function find($namespace, $text)
 	{
-		$string = $this->string->prepare($string);
-		$namespace = $this->string->stripPunctuation($namespace);
+		$string = $this->transformer->transform($text);
+		$namespace = $this->validateNamespace($namespace);
 		
 		$searchkeys = []; 
 		
@@ -54,6 +63,22 @@ class Reach {
 		// SUNION is an OR search
 		return empty($searchkeys) ? [] : $this->redis->sinter($searchkeys);
 	}
+
+    /**
+     * Ensure namespaces take on this:syntax
+     *
+     * @param string
+     * @return bool
+     */
+    public function validateNamespace($namespace)
+    {
+        if ( ! preg_match('/\w+(:\w+)+/', $namespace))
+        {
+            throw new InvalidNamespaceException("Namespace [$namespace] is not a valid namespace. (valid:namespace)");
+        }
+
+        return true;
+    }
 
 	/**
 	 * Search for a query in multiple namespaces

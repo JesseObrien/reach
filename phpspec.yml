@@ -1,0 +1,7 @@
+---
+suites:
+  reach_suite:
+    namespace: Reach
+    psr4_prefix: Reach
+
+formatter.name: pretty

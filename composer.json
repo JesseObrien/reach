@@ -18,7 +18,7 @@
     ],
     "autoload" : {
         "psr-4": {
-            "Reach": "src/"
+            "Reach\\": "src/"
         }
     },
     "minimum-stability": "dev"
